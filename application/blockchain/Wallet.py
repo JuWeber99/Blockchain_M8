@@ -1,0 +1,67 @@
+import json
+import os
+
+from application.blockchain import crypto
+from application.blockchain.Blockchain import get_blockchain
+from application.blockchain.Mempool import get_mempool
+from application.blockchain.Transaction import Transaction, UnsignedTransaction
+from application.blockchain.UTXO import UTXO
+
+
+def load_from_file():
+    with open("../../private_key.json", "r") as input_file:
+        data = json.loads(input_file.read())
+        return data["private_key"], data["password"]
+
+
+class Wallet:
+    def __init__(self, ):
+        if os.path.isfile("privateS_key.json"):
+            self.private_key, self.password = load_from_file()
+        else:
+            self.password = crypto.generate_password()
+            self.private_key = crypto.generate_private_pem_string(password_string=self.password)
+            self.save_to_file()
+        self.public_key = crypto.generate_public_pem_string(self.private_key, self.password)
+
+    def send_money(self, receiver_pks, msgs):
+        money_to_send = 0
+        for m in msgs:
+            money_to_send = money_to_send + m
+        tx = self.create_transaction(self.get_utxos(money_to_send), receiver_pks, msgs)
+        self.insert_to_mempool(tx)
+
+    def get_utxos(self, money):
+        blockchain = get_blockchain()
+        utxos = blockchain.get_utxos(crypto.generate_public_pem_string(self.private_key, self.password))
+        assert isinstance(utxos, list)
+        valid_utxos = []
+        for i in utxos:
+            assert isinstance(i, UTXO)
+            if get_blockchain().is_valid_UTXO(i):
+                valid_utxos.append(i)
+        needed_utxos = []
+        total_amount = 0
+        for i in valid_utxos:
+            needed_utxos.append(i)
+            total_amount += i.message
+            if total_amount >= money:
+                break
+        return needed_utxos
+
+    def create_transaction(self, utxos, receiver_pks, msgs):
+        unsigned = UnsignedTransaction(utxos=utxos, receiver_public_keys=receiver_pks, messages=msgs)
+        tx = Transaction(utxos=utxos, receiver_public_keys=receiver_pks, messages=msgs,
+                         signature=unsigned.sign(priv_key=self.private_key, password=self.password))
+        return tx
+
+    def insert_to_mempool(self, tx):
+        get_mempool().insert_transaction(tx)
+
+    def save_to_file(self):
+        data = {
+            "private_key": self.private_key,
+            "password": self.password
+        }
+        with open("../../private_key.json", "w") as output:
+            output.write(json.dumps(data))
