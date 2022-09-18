@@ -53,10 +53,7 @@ class Wallet:
         self.password = unlock_pwd
         self.private_key = unlock_privkey
         self.public_key = crypto.generate_public_pem_string(self.private_key, self.password)
-        self.address = codecs.encode(self.public_key.encode('utf-8'), 'base64')
-        self.txns = []
-        self.received_coinbase_txns = []
-        self.balance = 0
+        self.address = codecs.encode(self.public_key.encode('utf-8'), 'base64') # to display in frontend
 
     def send_money(self, chain, receiver_pks, msgs):
         print("sending money")
@@ -66,8 +63,6 @@ class Wallet:
         tx = self.create_transaction(self.get_utxos_for_money(chain, money_to_send), receiver_pks, msgs)
         get_mempool().insert_transaction(tx)
 
-    def get_transactions(self):
-        return self.txns
 
 # chain reference added to prevent cyclical imports
     def get_utxos_for_money(self, chain, money):

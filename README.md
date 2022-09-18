@@ -7,3 +7,5 @@ This project uses Flask to serve a simple REST API which exposes functionalities
 
 To get started
 initialize the virtualenv and install the required packages (requirements.txt) in the virtual environment 
+
+if setup. please run wsgi.py
