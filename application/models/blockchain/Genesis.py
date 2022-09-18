@@ -1,4 +1,4 @@
-from application.blockchain.Transaction import Coinbase
+from application.models.blockchain.Transaction import Coinbase
 
 CREATORS_PUBLIC_KEY = '''-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAl20HC7xKreGy16YVuvNQ

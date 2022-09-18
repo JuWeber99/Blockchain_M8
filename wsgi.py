@@ -1,8 +1,8 @@
 import threading
 
 from application import getFlaskContext
-from application.blockchain.Wallet import Wallet
-from application.blockchain.Miner import Miner
+from application.models.blockchain.Wallet import Wallet
+from application.models.blockchain.Miner import Miner
 
 wallet = Wallet()
 

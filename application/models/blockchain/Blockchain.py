@@ -1,11 +1,11 @@
 import json
 
-from application.blockchain import local_hashing
-from application.blockchain.Block import Block
-from application.blockchain.CONFIG import mining_target
-from application.blockchain.Genesis import genesis_coinbase
-from application.blockchain.Transaction import Transaction
-from application.blockchain.UTXO import UTXO
+from application.models.blockchain import local_hashing
+from application.models.blockchain.Block import Block
+from application.models.blockchain.CONFIG import mining_target
+from application.models.blockchain.Genesis import genesis_coinbase
+from application.models.blockchain.Transaction import Transaction
+from application.models.blockchain.UTXO import UTXO
 
 the_blockchain = None
 

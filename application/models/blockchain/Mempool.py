@@ -1,4 +1,4 @@
-from application.blockchain.Transaction import Transaction
+from application.models.blockchain.Transaction import Transaction
 
 the_mempool = None
 

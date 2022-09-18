@@ -1,7 +1,7 @@
 import json
 
-from application.blockchain import local_hashing, crypto
-from application.blockchain.UTXO import UTXO
+from application.models.blockchain import local_hashing, crypto
+from application.models.blockchain.UTXO import UTXO
 
 
 class Transaction:

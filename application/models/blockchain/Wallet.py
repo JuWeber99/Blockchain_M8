@@ -1,15 +1,15 @@
 import json
 import os
 
-from application.blockchain import crypto
-from application.blockchain.Blockchain import get_blockchain
-from application.blockchain.Mempool import get_mempool
-from application.blockchain.Transaction import Transaction, UnsignedTransaction
-from application.blockchain.UTXO import UTXO
+from application.models.blockchain import crypto
+from application.models.blockchain.Blockchain import get_blockchain
+from application.models.blockchain.Mempool import get_mempool
+from application.models.blockchain.Transaction import UnsignedTransaction, Transaction
+from application.models.blockchain.UTXO import UTXO
 
 
 def load_from_file():
-    with open("../../private_key.json", "r") as input_file:
+    with open("../../../private_key.json", "r") as input_file:
         data = json.loads(input_file.read())
         return data["private_key"], data["password"]
 
@@ -63,5 +63,5 @@ class Wallet:
             "private_key": self.private_key,
             "password": self.password
         }
-        with open("../../private_key.json", "w") as output:
+        with open("./private_key.json", "w+") as output:
             output.write(json.dumps(data))

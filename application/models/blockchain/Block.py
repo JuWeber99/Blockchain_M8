@@ -1,6 +1,6 @@
 import json
 
-from application.blockchain import local_hashing
+from application.models.blockchain import local_hashing
 
 
 class Block:

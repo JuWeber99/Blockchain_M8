@@ -1,11 +1,11 @@
 import random
 
-from application.blockchain import local_hashing
-from application.blockchain.Block import Block
-from application.blockchain.Blockchain import get_blockchain
-from application.blockchain.CONFIG import mining_target
-from application.blockchain.Mempool import get_mempool
-from application.blockchain.Transaction import Transaction, Coinbase
+from application.models.blockchain import local_hashing
+from application.models.blockchain.Block import Block
+from application.models.blockchain.Blockchain import get_blockchain
+from application.models.blockchain.CONFIG import mining_target
+from application.models.blockchain.Mempool import get_mempool
+from application.models.blockchain.Transaction import Transaction, Coinbase
 
 
 class Miner:
