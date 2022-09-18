@@ -32,21 +32,6 @@ def get_main_wallet():
     return the_wallet
 
 
-def get_main_wallet():
-    global the_wallet
-    if the_wallet is None:
-        private_key, password = load_from_file("2")
-        the_wallet = Wallet(password, private_key)
-    return the_wallet
-
-
-def get_user_wallet():
-    global the_wallet
-    if the_wallet is None:
-        private_key, password = load_from_file()
-        the_wallet = Wallet(password, private_key)
-    return the_wallet
-
 
 class Wallet:
     def __init__(self, unlock_pwd, unlock_privkey):
@@ -98,3 +83,19 @@ class Wallet:
         }
         with open(f"./private_key_${self.address}.json", "w+") as output:
             output.write(json.dumps(data))
+
+def get_main_wallet() -> Wallet:
+    global the_wallet
+    if the_wallet is None:
+        private_key, password = load_from_file("2")
+        the_wallet = Wallet(password, private_key)
+    return the_wallet
+
+
+def get_user_wallet() -> Wallet:
+    global the_wallet2
+    if the_wallet2 is None:
+        private_key, password = load_from_file()
+        the_wallet2 = Wallet(password, private_key)
+    return the_wallet2
+

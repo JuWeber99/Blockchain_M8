@@ -1,6 +1,7 @@
 import json
 
 from flask import Blueprint, render_template
+from wtforms import DecimalField
 
 from .forms import SendForm
 from .models.blockchain.Blockchain import get_blockchain
@@ -21,7 +22,6 @@ def get_balance_for_public_key(public_key):
         assert isinstance(utxo, UTXO)
         if utxo.public_key == public_key:
             balance = balance + utxo.message
-        print(balance)
     return balance
 
 
@@ -41,6 +41,7 @@ def send():
     wallet = get_main_wallet()
     # print(get_blockchain().get_utxos(wallet.public_key))
     if form.validate_on_submit():
+        amount = form.data.quantity._value #
         wallet.send_money(get_blockchain(), [get_user_wallet().public_key], [1])
     return render_template('send.html', form=form, address=wallet.address)
 

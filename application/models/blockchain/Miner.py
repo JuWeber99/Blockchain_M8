@@ -32,6 +32,7 @@ class Miner:
         txs.insert(0, coinbase)
         block = Block(hash_prev, txs, random.randint(0, 9999999999999999999999999999))
         hash = block.get_hash()
+        # removed the while true wrapper just return true or false since the block only gets inserted if successful
         check = self.check_agains_target(hash)
         if check:
             success = get_blockchain().insert_block(block)

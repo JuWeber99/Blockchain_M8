@@ -1,14 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import DecimalField, StringField, SubmitField
+from wtforms import DecimalField, StringField, SubmitField, SelectField
 from wtforms.validators import InputRequired, Length, NumberRange
 
-from application.models.blockchain.Wallet import get_user_wallet
-
-
-class LoginForm(FlaskForm):
-    """Form for logging into an account"""
-    passphrase = StringField('Password', validators=[InputRequired()])
-    submit = SubmitField('Login')
+from application.models.blockchain.Wallet import get_user_wallet, Wallet, get_main_wallet
 
 
 class SendForm(FlaskForm):
@@ -16,12 +10,14 @@ class SendForm(FlaskForm):
     quantity = DecimalField(
         'Quantity',
         validators=[InputRequired(), NumberRange(min=1)],
-        render_kw={"placeholder": "Quantity to Send"}
+        render_kw={"placeholder": "Quantity to Send"},
+        default=1
     )
-    receiver = StringField(
+    receiver = SelectField(
         'Receiver',
-        validators=[InputRequired(), Length(min=0, max=10000000000)],  # TODO
-        render_kw={"placeholder": "Receiver Address"},
-        default=get_user_wallet().public_key
+        coerce=str,
+        choices=[get_user_wallet().public_key, get_main_wallet().public_key],
+
     )
+    # choose from the 2 users
     submit = SubmitField('Send')

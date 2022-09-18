@@ -33,6 +33,7 @@ class Blockchain:
                 for utxo in tx.utxos:
                     if not self.is_valid_UTXO(utxo):
                         return False
+            # we must remove the sucessful txns from the mempool !
             get_mempool().tx.remove(tx)
         self.blocks.append(block)
         return True

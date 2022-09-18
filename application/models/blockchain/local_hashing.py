@@ -1,7 +1,7 @@
 import codecs
 import hashlib
 
-
+# renamed to avoid confusions with pip module hashing
 def hash(string):
     sha = hashlib.sha3_256()
     sha.update(string.encode("utf-8"))
