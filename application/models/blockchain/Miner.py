@@ -19,6 +19,7 @@ class Miner:
                 return False
         return True
 
+# mine a block
     def mine(self):
         topmost_block = get_blockchain().get_topmost_block()
         assert isinstance(topmost_block, Block)
@@ -37,5 +38,7 @@ class Miner:
         if check:
             success = get_blockchain().insert_block(block)
             if success:
+                # we inserted a block and deleted the txns from mempool -> return success
                 return True
+            # invalid block mined try again -> return false
         return False

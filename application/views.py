@@ -15,9 +15,10 @@ main_bp = Blueprint(
     static_folder='static'
 )
 
-
+# get the balance a public key has
 def get_balance_for_public_key(public_key):
     balance = 0
+    # iterate all utxos for the public key and sum their value
     for utxo in get_blockchain().get_utxos(public_key):
         assert isinstance(utxo, UTXO)
         if utxo.public_key == public_key:
@@ -41,6 +42,7 @@ def send():
     wallet = get_main_wallet()
     # print(get_blockchain().get_utxos(wallet.public_key))
     if form.validate_on_submit():
+        # send 1 to user wallet
         wallet.send_money(get_blockchain(), [get_user_wallet().public_key], [1])
     return render_template('send.html', form=form, address=wallet.address)
 
@@ -71,7 +73,7 @@ def transactions():
 @main_bp.route('/mnemonic')
 # @login_required
 def mnemonic():
-    """Displays the recovery passphrase"""
+    """Displays the private key """
     wallet = get_main_wallet()
     return render_template('mnemonic.html', passphrase=wallet.private_key)
 
