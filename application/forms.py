@@ -16,8 +16,7 @@ class SendForm(FlaskForm):
     receiver = SelectField(
         'Receiver',
         coerce=str,
-        choices=[get_user_wallet().public_key, get_main_wallet().public_key],
-
+        choices=[get_user_wallet().public_key.encode("utf-8"), get_main_wallet().public_key.encode("utf-8")],
     )
     # choose from the 2 users
     submit = SubmitField('Send')

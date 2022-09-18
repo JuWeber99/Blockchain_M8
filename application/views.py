@@ -41,7 +41,6 @@ def send():
     wallet = get_main_wallet()
     # print(get_blockchain().get_utxos(wallet.public_key))
     if form.validate_on_submit():
-        amount = form.data.quantity._value #
         wallet.send_money(get_blockchain(), [get_user_wallet().public_key], [1])
     return render_template('send.html', form=form, address=wallet.address)
 
