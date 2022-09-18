@@ -10,7 +10,7 @@
     </tr>
     {% for txn in txns %}
     <tr>
-        <td>{{ txn.receiver_public_key }}</td>
+        <td>{{ txn.get_hash() }}</td>
         <td>{{ txn.messages }}</td>
         </div>
     </tr>

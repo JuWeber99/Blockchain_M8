@@ -65,7 +65,7 @@ def transactions():
                 continue
             elif tx.utxos[0].public_key is wallet.public_key:
                 sent_txns.append(tx)
-    txns = sent_txns
+    txns = set(sent_txns)
 
     return render_template('transactions.html', txns=txns, cbtxns=received_coinbase_txns)
 
