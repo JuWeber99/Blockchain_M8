@@ -8,6 +8,7 @@ body {
     display: flex;
     justify-content: center;
 }
+
 .content {
     text-align: center;
     padding: 15px;

@@ -1,10 +1,7 @@
 import codecs
 import json
-import os
-import random
-import string
 
-from application.models.blockchain import crypto, local_hashing
+from application.models.blockchain import crypto
 from application.models.blockchain.Mempool import get_mempool
 from application.models.blockchain.Transaction import UnsignedTransaction, Transaction
 from application.models.blockchain.UTXO import UTXO
@@ -56,7 +53,7 @@ class Wallet:
         self.password = unlock_pwd
         self.private_key = unlock_privkey
         self.public_key = crypto.generate_public_pem_string(self.private_key, self.password)
-        self.address =codecs.encode(self.public_key.encode('utf-8'), 'base64')
+        self.address = codecs.encode(self.public_key.encode('utf-8'), 'base64')
         self.txns = []
         self.received_coinbase_txns = []
         self.balance = 0
@@ -81,6 +78,8 @@ class Wallet:
             if cumulated_balance >= money:
                 break
             assert isinstance(i, UTXO)
+            # here we changed something to not iterate over all valid utxos of the user
+            # but rather only till we found enough money
             if chain.is_valid_UTXO(i):
                 valid_utxos.append(i)
                 cumulated_balance = cumulated_balance + i.message

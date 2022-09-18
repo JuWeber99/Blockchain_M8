@@ -1,12 +1,11 @@
-import base64
 import json
 
 from flask import Blueprint, render_template
+
 from .forms import SendForm
 from .models.blockchain.Blockchain import get_blockchain
 from .models.blockchain.Transaction import Coinbase
 from .models.blockchain.UTXO import UTXO
-
 from .models.blockchain.Wallet import get_main_wallet, get_user_wallet
 
 main_bp = Blueprint(
@@ -40,7 +39,7 @@ def send():
     """Provides a form to create and send a transaction"""
     form = SendForm()
     wallet = get_main_wallet()
-    #print(get_blockchain().get_utxos(wallet.public_key))
+    # print(get_blockchain().get_utxos(wallet.public_key))
     if form.validate_on_submit():
         wallet.send_money(get_blockchain(), [get_user_wallet().public_key], [1])
     return render_template('send.html', form=form, address=wallet.address)
@@ -68,6 +67,7 @@ def transactions():
 
     return render_template('transactions.html', txns=txns, cbtxns=received_coinbase_txns)
 
+
 @main_bp.route('/mnemonic')
 # @login_required
 def mnemonic():
@@ -75,10 +75,10 @@ def mnemonic():
     wallet = get_main_wallet()
     return render_template('mnemonic.html', passphrase=wallet.private_key)
 
+
 @main_bp.route('/last_block')
 # @login_required
 def get_last_block():
     """Displays the recovery passphrase"""
 
     return json.dumps(get_blockchain().get_topmost_block().get_dict(), indent=4)
-

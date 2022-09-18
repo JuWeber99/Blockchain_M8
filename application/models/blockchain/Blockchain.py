@@ -5,9 +5,8 @@ from application.models.blockchain.Block import Block
 from application.models.blockchain.CONFIG import mining_target
 from application.models.blockchain.Genesis import genesis_coinbase
 from application.models.blockchain.Mempool import get_mempool
-from application.models.blockchain.Transaction import Transaction, Coinbase
+from application.models.blockchain.Transaction import Transaction
 from application.models.blockchain.UTXO import UTXO
-from application.models.blockchain.Wallet import get_main_wallet
 
 the_blockchain = None
 
