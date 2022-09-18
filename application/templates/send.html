@@ -20,18 +20,11 @@
     {% if form.receiver.errors %}
         <h3>{{ form.receiver.errors[0] }}</h3>
     {% endif %}
-    <br>
-    {{ form.note.label }}
-    <br>
-    {{ form.note }}
-    <br>
-    {% if form.note.errors %}
-        <h3>{{ form.note.errors[0] }}</h3>
-    {% endif %}
+
     <br>
     {{ form.submit }}
 </form>
 <h1>Receive Algorand</h1>
-<h2>Your address is:</h2>
+<h2>Your base64 address is:</h2>
 <h4>{{ address }}</h4>
 {% endblock %}

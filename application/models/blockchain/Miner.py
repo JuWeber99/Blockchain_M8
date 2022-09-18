@@ -30,14 +30,11 @@ class Miner:
                 txs.remove(i)
         coinbase = Coinbase(self.public_key)
         txs.insert(0, coinbase)
-        while True:
-            block = Block(hash_prev, txs, random.randint(0, 9999999999999999999999999999))
-            hash = block.get_hash()
-            check = self.check_agains_target(hash)
-            if check:
-                # FOUND NEW BLOCK; COINBASE$$$$
-                success = get_blockchain().insert_block(block)
-                if success:
-                    # print(get_blockchain().get_json())
-                    print(f"new block mined: ${hash}")
-                break
+        block = Block(hash_prev, txs, random.randint(0, 9999999999999999999999999999))
+        hash = block.get_hash()
+        check = self.check_agains_target(hash)
+        if check:
+            success = get_blockchain().insert_block(block)
+            if success:
+                return True
+        return False

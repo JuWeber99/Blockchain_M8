@@ -1,4 +1,5 @@
 from application.models.blockchain.Transaction import Coinbase
+from application.models.blockchain.Wallet import get_main_wallet
 
 CREATORS_PUBLIC_KEY = '''-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAl20HC7xKreGy16YVuvNQ
@@ -17,4 +18,4 @@ vQQ14WELBorYCiGiDginapgUC7uKIVaj0nLEBbyim1jrnCWhsGbBK41tF7bPBRo/
 
 
 def genesis_coinbase():
-    return Coinbase(CREATORS_PUBLIC_KEY)
+    return Coinbase(get_main_wallet().public_key)

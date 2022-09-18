@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, redirect, url_for
-from flask_login import login_required, logout_user, current_user
+import base64
+import json
 
-from .forms import SendForm, AssetForm, FilterForm
+from flask import Blueprint, render_template
+from .forms import SendForm
+from .models.blockchain.Blockchain import get_blockchain
+from .models.blockchain.Transaction import Coinbase
+from .models.blockchain.UTXO import UTXO
+
+from .models.blockchain.Wallet import get_main_wallet, get_user_wallet
 
 main_bp = Blueprint(
     'main_bp', __name__,
@@ -10,89 +16,69 @@ main_bp = Blueprint(
 )
 
 
+def get_balance_for_public_key(public_key):
+    balance = 0
+    for utxo in get_blockchain().get_utxos(public_key):
+        assert isinstance(utxo, UTXO)
+        if utxo.public_key == public_key:
+            balance = balance + utxo.message
+        print(balance)
+    return balance
+
+
 @main_bp.route('/')
-@login_required
+# @login_required
 def index():
     """Main page, displays balance"""
-    balance = current_user.get_balance()
+    wallet = get_main_wallet()
+    balance = get_balance_for_public_key(wallet.public_key)
     return render_template('index.html', balance=balance)
 
 
 @main_bp.route('/send', methods=['GET', 'POST'])
-@login_required
 def send():
     """Provides a form to create and send a transaction"""
     form = SendForm()
-    address = current_user.public_key
+    wallet = get_main_wallet()
+    #print(get_blockchain().get_utxos(wallet.public_key))
     if form.validate_on_submit():
-        success = current_user.send(form.quantity.data, form.receiver.data, form.note.data)
-        return render_template('success.html', success=success)
-
-    # show the form, it wasn't submitted
-    return render_template('send.html', form=form, address=address)
-
-
-@main_bp.route('/create', methods=['GET', 'POST'])
-@login_required
-def create():
-    """Provides a form to create an asset"""
-    form = AssetForm()
-    if form.validate_on_submit():
-        success = current_user.create(
-            form.asset_name.data,
-            form.unit_name.data,
-            form.total.data,
-            form.decimals.data,
-            form.default_frozen.data,
-            form.url.data
-        )
-
-        print(success)
-        return redirect(url_for('main_bp.assets'))
-
-    # show the form, it wasn't submitted
-    return render_template('create_asset.html', form=form)
+        wallet.send_money(get_blockchain(), [get_user_wallet().public_key], [1])
+    return render_template('send.html', form=form, address=wallet.address)
 
 
 @main_bp.route('/transactions', methods=['GET', 'POST'])
-@login_required
 def transactions():
     """Displays all transactions from the user"""
-    form = FilterForm()
+    wallet = get_main_wallet()
+    blocks = get_blockchain().blocks
+    received_coinbase_txns = []
+    sent_txns = []
+    # iterate all blocks and search for txns of the current wallet (main wallet)
+    # and search for the coinbase txns the wallet received and the txns it made
+    for block in blocks:
+        for tx in block.transactions:
+            if isinstance(tx, Coinbase):
+                for pk in tx.receiver_public_keys:
+                    if wallet.public_key == pk:
+                        received_coinbase_txns.append(tx)
+                continue
+            elif tx.utxos[0].public_key is wallet.public_key:
+                sent_txns.append(tx)
+    txns = sent_txns
 
-    if form.validate_on_submit():
-        txns = current_user.get_transactions(form.substring.data)
-    else:
-        txns = current_user.get_transactions("")
-
-    return render_template('transactions.html', txns=txns, form=form)
-
-
-@main_bp.route('/assets', methods=['GET', 'POST'])
-@login_required
-def assets():
-    """Displays all assets owned by the user"""
-    form = FilterForm()
-
-    if form.validate_on_submit():
-        assets_list = current_user.get_assets(form.substring.data)
-    else:
-        assets_list = current_user.get_assets("")
-
-    return render_template('assets.html', assets=assets_list, form=form)
-
+    return render_template('transactions.html', txns=txns, cbtxns=received_coinbase_txns)
 
 @main_bp.route('/mnemonic')
-@login_required
+# @login_required
 def mnemonic():
     """Displays the recovery passphrase"""
-    passphrase = current_user.passphrase
-    return render_template('mnemonic.html', passphrase=passphrase)
+    wallet = get_main_wallet()
+    return render_template('mnemonic.html', passphrase=wallet.private_key)
 
+@main_bp.route('/lastblockhash')
+# @login_required
+def get_last_block():
+    """Displays the recovery passphrase"""
 
-@main_bp.route('/logout')
-@login_required
-def logout():
-    """User log-out logic."""
-    logout_user()
-    return redirect(url_for('auth_bp.login'))
+    return json.dumps(get_blockchain().get_topmost_block().get_dict(), indent=4)
+

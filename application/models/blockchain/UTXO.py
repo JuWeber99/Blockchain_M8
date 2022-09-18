@@ -1,5 +1,7 @@
 import json
 
+from application.models.blockchain import local_hashing
+
 
 class UTXO:
     def __init__(self, tx_hash, public_key, message):
@@ -15,4 +17,4 @@ class UTXO:
         }
 
     def get_hash(self):
-        return hashing.hash(json.dumps(self.get_dict()))
+        return local_hashing.hash(json.dumps(self.get_dict()))
