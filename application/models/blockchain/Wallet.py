@@ -69,6 +69,7 @@ class Wallet:
     def get_transactions(self):
         return self.txns
 
+# chain reference added to prevent cyclical imports
     def get_utxos_for_money(self, chain, money):
         utxos = chain.get_utxos(self.public_key)
         assert isinstance(utxos, list)
