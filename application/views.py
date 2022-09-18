@@ -75,7 +75,7 @@ def mnemonic():
     wallet = get_main_wallet()
     return render_template('mnemonic.html', passphrase=wallet.private_key)
 
-@main_bp.route('/lastblockhash')
+@main_bp.route('/last_block')
 # @login_required
 def get_last_block():
     """Displays the recovery passphrase"""
